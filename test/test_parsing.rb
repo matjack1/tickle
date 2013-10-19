@@ -93,7 +93,7 @@ class TestParsing < Test::Unit::TestCase
 
     assert_tickle_match(@date.bump(:wday, 'Mon'), @date.bump(:wday, 'Mon'), nil, 'month', 'starting Monday repeat every month')
 
-    year = @date >= Date.new(@date.year, 5, 13) ? @date.bump(:year,1) : @date.year
+    year = @date >= Date.new(@date.year, 5, 13) ? @date.bump(:year,1).year : @date.year
     assert_tickle_match(Date.new(year, 05, 13), Date.new(year, 05, 13), nil, 'week', 'starting May 13th repeat every week')
     assert_tickle_match(Date.new(year, 05, 13), Date.new(year, 05, 13), nil, 'other day', 'starting May 13th repeat every other day')
     assert_tickle_match(Date.new(year, 05, 13), Date.new(year, 05, 13), nil, 'other day', 'every other day starts May 13th')
@@ -123,7 +123,7 @@ class TestParsing < Test::Unit::TestCase
     assert_tickle_match(start_date.bump(:month, 3), @date, nil, '3 months', 'every 3 months', {:start => start_date})
     assert_tickle_match(start_date.bump(:year, 3), @date, nil, '3 years', 'every 3 years', {:start => start_date})
 
-    end_date = Date.civil(Date.today.year, Date.today.month+5, Date.today.day).to_time
+    end_date = Time.now.advance(months: 5)
     assert_tickle_match(start_date.bump(:day, 3), @date, start_date.bump(:month, 5), '3 days', 'every 3 days', {:start => start_date, :until  => end_date})
     assert_tickle_match(start_date.bump(:week, 3), @date, start_date.bump(:month, 5), '3 weeks', 'every 3 weeks', {:start => start_date, :until  => end_date})
     assert_tickle_match(start_date.bump(:month, 3), @date, start_date.bump(:month, 5), '3 months', 'every 3 months', {:until => end_date})
@@ -194,6 +194,7 @@ class TestParsing < Test::Unit::TestCase
   end
 
   private
+
   def parse_now(string, options={})
     out = Tickle.parse(string, {}.merge(options))
     puts (options.empty? ?  ("Tickle.parse('#{string}')\n\r  #=> #{out}\n\r") : ("Tickle.parse('#{string}', #{options})\n\r  #=> #{out}\n\r")) if @verbose

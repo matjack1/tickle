@@ -169,6 +169,7 @@ module Tickle  #:nodoc:
 
       text.gsub!(/every(\s)?/, '')
       text.gsub!(/each(\s)?/, '')
+      text.gsub!(/and(\s)?/, '')
       text.gsub!(/repeat(s|ing)?(\s)?/, '')
       text.gsub!(/on the(\s)?/, '')
       text.gsub!(/([^\w\d\s])+/, '')
@@ -253,8 +254,6 @@ module Tickle  #:nodoc:
     def token_types
       @tokens.map(&:type)
     end
-
-    protected
 
     # Returns the next available month based on the current day of the month.
     # For example, if get_next_month(15) is called and the start date is the 10th, then it will return the 15th of this month.
