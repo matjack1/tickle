@@ -48,12 +48,18 @@ module Tickle #:nodoc:
     end
 
     def guess_ordinal
-      @next = handle_same_day_chronic_issue(@start.year, @start.month, token_of_type(:ordinal).start) if token_types.same?([:ordinal])
+      if token_types.same?([:ordinal])
+        @next = handle_same_day_chronic_issue(@start.year, @start.month, token_of_type(:ordinal).start)
+        @next = @next.advance(months: 1) if @next < @start
+      end
     end
 
     def guess_ordinal_and_unit
       @next = handle_same_day_chronic_issue(@start.year, token_of_type(:month_name).start, token_of_type(:ordinal).start) if token_types.same?([:ordinal, :month_name])
-      @next = handle_same_day_chronic_issue(@start.year, @start.month, token_of_type(:ordinal).start) if token_types.same?([:ordinal, :month])
+      if token_types.same?([:ordinal, :month])
+        @next = handle_same_day_chronic_issue(@start.year, @start.month, token_of_type(:ordinal).start)
+        @next = @next.advance(months: 1) if @next < @start
+      end
       @next = handle_same_day_chronic_issue(token_of_type(:specific_year).word, token_of_type(:month_name).start, token_of_type(:ordinal).start) if token_types.same?([:ordinal, :month_name, :specific_year])
 
       if token_types.same?([:ordinal, :weekday, :month_name])
